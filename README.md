@@ -1,7 +1,7 @@
-### BEReminder - Backend for iOS App
+## BEReminder - Backend for iOS App
 BEReminder is a backend service designed to support the iOS BEReminder app. It provides the necessary functionalities to manage reminders efficiently. The backend handles tasks such as storing reminder data, managing user accounts, and sending push notifications to iOS devices.
 
-### Features
+## Features
 Reminder Management: Allows users to create, update, and delete reminders.
 User Authentication: Provides authentication mechanisms to manage user accounts securely.
 Push Notifications: Sends push notifications to iOS devices to remind users of upcoming tasks.
@@ -13,20 +13,18 @@ Push Notifications: When a reminder is set in the BEReminder iOS app, the backen
 System Requirements
 Compatible with iOS 13.0 and later.
 Requires a stable internet connection to communicate with the backend server.
-### Installation
+## Installation
 The BEReminder backend service is hosted on a cloud server. Users do not need to install the backend manually. Instead, they interact with it through the BEReminder iOS app.
-'''
-#   Build images: docker-compose build
-#      Start app: docker-compose up app
-# Start database: docker-compose up db
-# Run migrations: docker-compose run migrate
-#       Stop all: docker-compose down (add -v to wipe db)
-'''
-### Future Updates
+###   Build images: docker-compose build
+###      Start app: docker-compose up app
+### Start database: docker-compose up db
+### Run migrations: docker-compose run migrate
+###       Stop all: docker-compose down (add -v to wipe db)
+## Future Updates
 Enhanced security features for user authentication.
 Improved scalability and performance optimizations.
 Integration with third-party services for additional functionalities.
-### Support
+## Support
 For any inquiries or assistance, please contact our support team at support@bereminder.com.
 
 License
