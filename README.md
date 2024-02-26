@@ -25,13 +25,11 @@ Enhanced security features for user authentication.
 Improved scalability and performance optimizations.
 Integration with third-party services for additional functionalities.
 ## Support
-For any inquiries or assistance, please contact our support team at support@bereminder.com.
+For any inquiries or assistance, please contact our support team at tranvietanh1803@gmail.com.
 
 License
 BEReminder backend service is developed and maintained by the BEReminder team. All rights reserved.
 
-Additional Resources
-Visit our official website at www.bereminder.com for more information about our products and services.
 
 Version
 Current version: 1.0
