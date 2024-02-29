@@ -18,8 +18,10 @@ public func configure(_ app: Application) async throws {
         tlsConfiguration: tls
     ), as: .mysql)
 
-    app.migrations.add(CreateUser())
-    app.migrations.add(CreateReminder())
+    app.migrations.add(User.CreateUser())
+    app.migrations.add(Reminder.CreateReminder())
     // register routes
+
     try routes(app)
 }
+ 

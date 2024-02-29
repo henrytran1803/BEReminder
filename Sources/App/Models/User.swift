@@ -6,30 +6,38 @@
 //
 import Fluent
 import Vapor
+
 final class User: Model, Content {
-    static let schema = "user"
-    
+    static let schema = "users"
+
     @ID(key: .id)
     var id: UUID?
 
     @Field(key: "name")
     var name: String
-    
-    @Field(key: "password")
-    var pass: String
-    
-    @Timestamp(key: "createat", on: .create)
-    var createat: Date?
-    
-    
-    init() {
-        
-    }
-    init(id: UUID? = nil, name: String, pass: String, createat: Date? = nil) {
+
+    @Field(key: "email")
+    var email: String
+
+    @Field(key: "password_hash")
+    var passwordHash: String
+
+    init() { }
+
+    init(id: UUID? = nil, name: String, email: String, passwordHash: String) {
         self.id = id
         self.name = name
-        self.pass = pass
-        self.createat = createat
+        self.email = email
+        self.passwordHash = passwordHash
     }
-
 }
+//extension User: ModelAuthenticatable {
+//    static let usernameKey = \User.$email
+//    static let passwordHashKey = \User.$passwordHash
+//                    
+//    func verify(password: String) throws -> Bool {
+//        try Bcrypt.verify(password, created: self.passwordHash)
+//    }
+//}
+
+

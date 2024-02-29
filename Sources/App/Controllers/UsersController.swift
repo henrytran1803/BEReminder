@@ -6,6 +6,7 @@
 //
 
 import Vapor
+import Fluent
 
 struct UsersController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
@@ -25,7 +26,15 @@ struct UsersController: RouteCollection {
     }
 
     func create(req: Request) async throws -> User {
-        let user = try req.content.decode(User.self)
+        let create = try req.content.decode(User.Create.self)
+        guard create.password == create.confirmPassword else {
+            throw Abort(.badRequest, reason: "Passwords did not match")
+        }
+        let user = try User(
+            name: create.name,
+            email: create.email,
+            passwordHash: Bcrypt.hash(create.password)
+        )
         try await user.save(on: req.db)
         return user
     }
@@ -44,7 +53,7 @@ struct UsersController: RouteCollection {
         let updatedUser = try req.content.decode(User.self)
         
         user.name = updatedUser.name
-        user.pass = updatedUser.pass
+        user.passwordHash = updatedUser.passwordHash
         try await user.save(on: req.db)
         return user
     }
@@ -55,5 +64,28 @@ struct UsersController: RouteCollection {
         }
         try await user.delete(on: req.db)
         return .ok
+    }
+}
+extension User {
+    struct Create: Content {
+        var name: String
+        var email: String
+        var password: String
+        var confirmPassword: String
+    }
+}
+extension User.Create: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("name", as: String.self, is: !.empty)
+        validations.add("email", as: String.self, is: .email)
+        validations.add("password", as: String.self, is: .count(8...))
+    }
+}
+extension User: ModelAuthenticatable {
+    static let usernameKey = \User.$email
+    static let passwordHashKey = \User.$passwordHash
+
+    func verify(password: String) throws -> Bool {
+        try Bcrypt.verify(password, created: self.passwordHash)
     }
 }

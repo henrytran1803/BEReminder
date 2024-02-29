@@ -6,19 +6,21 @@
 //
 
 import Fluent
+extension Reminder{
+    struct CreateReminder: AsyncMigration {
+        func prepare(on database: Database) async throws {
+            try await database.schema("reminder")
+                .id()
+                .field("title", .string, .required)
+                .field("body", .string, .required)
+                .field("createat", .datetime, .required)
+                .field("user_id", .uuid, .required, .references("users", "id"))
+                .create()
+        }
 
-struct CreateReminder: AsyncMigration {
-    func prepare(on database: Database) async throws {
-        try await database.schema("reminder")
-            .id()
-            .field("title", .string, .required)
-            .field("body", .string, .required)
-            .field("createat", .datetime, .required)
-            .field("user_id", .uuid, .required, .references("user", "id"))
-            .create()
-    }
-
-    func revert(on database: Database) async throws {
-        try await database.schema("reminder").delete()
+        func revert(on database: Database) async throws {
+            try await database.schema("reminder").delete()
+        }
     }
 }
+
