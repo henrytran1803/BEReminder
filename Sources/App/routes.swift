@@ -4,19 +4,23 @@ func routes(_ app: Application) throws {
     app.get { req async in
         "It works!"
     }
-
+    
     app.get("hello") { req async -> String in
         "Hello, world!"
     }
-//    let protected = app.grouped(UserAuthenticator())
-//        .grouped(User.guardMiddleware())
-//    protected.get("me") { req -> String in
-//        try req.auth.require(User.self).name
-//    }
+    let passwordProtected = app.grouped(User.authenticator())
+    passwordProtected.post("login") { req async throws -> UserToken in
+        let user = try req.auth.require(User.self)
+        let token = try user.generateToken()
+        try await token.save(on: req.db)
+        return token
+    }
+    
 //    let passwordProtected = app.grouped(User.authenticator())
 //    passwordProtected.post("login") { req -> User in
 //        try req.auth.require(User.self)
 //    }
+
     try app.register(collection: UsersController())
     try app.register(collection: RemindersController())
 //    let passwordProtected = app.grouped(User.authenticator())

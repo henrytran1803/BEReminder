@@ -30,6 +30,9 @@ final class User: Model, Content {
         self.email = email
         self.passwordHash = passwordHash
     }
+    init( email: String) {
+        self.email = email
+    }
 }
 //extension User: ModelAuthenticatable {
 //    static let usernameKey = \User.$email
@@ -39,5 +42,26 @@ final class User: Model, Content {
 //        try Bcrypt.verify(password, created: self.passwordHash)
 //    }
 //}
-
-
+//extension User: SessionAuthenticatable {
+//    var sessionID: String {
+//        self.email
+//    }
+//}
+//
+//
+//struct UserSessionAuthenticator: AsyncSessionAuthenticator {
+//    typealias User = App.User
+//    func authenticate(sessionID: String, for request: Request) async throws {
+//        let user = User(email: sessionID)
+//        request.auth.login(user)
+//    }
+//}
+//
+//struct UserBearerAuthenticator: AsyncBearerAuthenticator {
+//    func authenticate(bearer: BearerAuthorization, for request: Request) async throws {
+//        if bearer.token == "test" {
+//            let user = User(email: "hello@vapor.codes")
+//            request.auth.login(user)
+//        }
+//    }
+//}

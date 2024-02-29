@@ -2,7 +2,7 @@ import NIOSSL
 import Fluent
 import FluentMySQLDriver
 import Vapor
-
+extension User: ModelSessionAuthenticatable { }
 // configures your application
 public func configure(_ app: Application) async throws {
     // uncomment to serve files from /Public folder
@@ -20,8 +20,10 @@ public func configure(_ app: Application) async throws {
 
     app.migrations.add(User.CreateUser())
     app.migrations.add(Reminder.CreateReminder())
+    app.migrations.add(UserToken.CreateUserToken())
     // register routes
-
+    app.middleware.use(app.sessions.middleware)
+    app.middleware.use(User.sessionAuthenticator(.mysql))
     try routes(app)
 }
  

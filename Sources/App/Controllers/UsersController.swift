@@ -10,15 +10,25 @@ import Fluent
 
 struct UsersController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let todos = routes.grouped("user")
-        todos.get(use: index)
-        todos.post(use: create)
-
-        todos.group(":id") { todo in
-            todo.get(use: show)
-            todo.put(use: update)
-            todo.delete(use: delete)
+        // Tạo một nhóm routes và áp dụng middleware để xác thực token
+        let tokenProtected = routes.grouped(UserToken.authenticator())
+        tokenProtected.get("me") { req -> User in
+            try req.auth.require(User.self)
         }
+        
+        // Áp dụng middleware cho route index của "user"
+        tokenProtected.get("user", use: index)
+        // Tạo một nhóm routes cho các endpoint của "user"
+//        let todos = tokenProtected.grouped("user")
+////        todos.get(use: index)
+////        todos.post(use: create)
+//
+//        // Nhóm các routes liên quan đến các "todo" và áp dụng các handler cho chúng
+//        todos.group(":id") { todo in
+//            todo.get(use: show)
+//            todo.put(use: update)
+//            todo.delete(use: delete)
+//        }
     }
 
     func index(req: Request) async throws -> [User] {
@@ -84,8 +94,23 @@ extension User.Create: Validatable {
 extension User: ModelAuthenticatable {
     static let usernameKey = \User.$email
     static let passwordHashKey = \User.$passwordHash
-
     func verify(password: String) throws -> Bool {
         try Bcrypt.verify(password, created: self.passwordHash)
+    }
+}
+extension User {
+    func generateToken() throws -> UserToken {
+        try .init(
+            value: [UInt8].random(count: 16).base64,
+            userID: self.requireID()
+        )
+    }
+}
+extension UserToken: ModelTokenAuthenticatable {
+    static let valueKey = \UserToken.$value
+    static let userKey = \UserToken.$user
+
+    var isValid: Bool {
+        true
     }
 }
