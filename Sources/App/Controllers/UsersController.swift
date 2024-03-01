@@ -15,26 +15,26 @@ struct UsersController: RouteCollection {
         tokenProtected.get("me") { req -> User in
             try req.auth.require(User.self)
         }
-        
-        // Áp dụng middleware cho route index của "user"
-        tokenProtected.get("user", use: index)
-        // Tạo một nhóm routes cho các endpoint của "user"
-//        let todos = tokenProtected.grouped("user")
-////        todos.get(use: index)
-////        todos.post(use: create)
-//
-//        // Nhóm các routes liên quan đến các "todo" và áp dụng các handler cho chúng
-//        todos.group(":id") { todo in
-//            todo.get(use: show)
-//            todo.put(use: update)
-//            todo.delete(use: delete)
-//        }
+        tokenProtected.group("user") { users in
+            users.group(User.guardMiddleware()) { guardedUsers in
+                guardedUsers.get(use: index) 
+                guardedUsers.post(use: create)
+                
+                guardedUsers.group(":id") { user in
+                    user.group(User.guardMiddleware()) { guardedUser in
+                        guardedUser.get(use: show)
+                        guardedUser.put(use: update)
+                        guardedUser.delete(use: delete)
+                    }
+                }
+            }
+        }
     }
 
     func index(req: Request) async throws -> [User] {
-        try await User.query(on: req.db).all()
-    }
 
+        return try await User.query(on: req.db).all()
+    }
     func create(req: Request) async throws -> User {
         let create = try req.content.decode(User.Create.self)
         guard create.password == create.confirmPassword else {
