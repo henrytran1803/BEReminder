@@ -9,11 +9,11 @@ func routes(_ app: Application) throws {
         "Hello, world!"
     }
     let passwordProtected = app.grouped(User.authenticator())
-    passwordProtected.post("login") { req async throws -> UserToken in
+    passwordProtected.post("login") { req async throws -> LoginResponse in
         let user = try req.auth.require(User.self)
         let token = try user.generateToken()
         try await token.save(on: req.db)
-        return token
+        return LoginResponse(status: true, token: token)
     }
     
 //    let passwordProtected = app.grouped(User.authenticator())
@@ -59,3 +59,8 @@ func routes(_ app: Application) throws {
 //   }
 //}
 
+
+struct LoginResponse: Content {
+    let status: Bool
+    let token: UserToken
+}
