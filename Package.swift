@@ -13,6 +13,14 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
         // 🐬 Fluent driver for MySQL.
         .package(url: "https://github.com/vapor/fluent-mysql-driver.git", from: "4.0.0"),
+        // 🐬 openapi driver for MySQL.
+        .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.0.0"),
+        // 🐬 openapi driver for MySQL.
+        .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.0.0"),
+        // 🐬 openapi driver for MySQL.
+        .package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.0"),
+
+        
         
     ],
     targets: [
@@ -22,6 +30,10 @@ let package = Package(
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentMySQLDriver", package: "fluent-mysql-driver"),
                 .product(name: "Vapor", package: "vapor"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .product(name: "OpenAPIVapor", package: "swift-openapi-vapor"),
+
+                
             ]
         ),
         .testTarget(name: "AppTests", dependencies: [

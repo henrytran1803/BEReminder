@@ -1,5 +1,8 @@
 import Fluent
 import Vapor
+import OpenAPIRuntime
+import OpenAPIVapor
+
 func routes(_ app: Application) throws {
     app.get { req async in
         "It works!"
@@ -16,49 +19,21 @@ func routes(_ app: Application) throws {
         return LoginResponse(status: true, token: token)
     }
     
-//    let passwordProtected = app.grouped(User.authenticator())
-//    passwordProtected.post("login") { req -> User in
-//        try req.auth.require(User.self)
-//    }
 
+    // Register your API controllers
     try app.register(collection: UsersController())
     try app.register(collection: RemindersController())
-//    let passwordProtected = app.grouped(User.authenticator())
-//    passwordProtected.post("login") { req async throws -> UserToken in
-//        let user = try req.auth.require(User.self)
-//        let token = try user.generateToken()
-//        try await token.save(on: req.db)
-//        return token
-//    }
-//    let tokenProtected = app.grouped(UserToken.authenticator())
-//    tokenProtected.get("me") { req -> User in
-//        try req.auth.require(User.self)
-//    }
+
+    // Register the raw file middleware, which serves files from the Public directory, including
+    // the openapi.yaml and openapi.html files.
+    app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+
+    // Redirect /openapi to /openapi.html
+    app.get("openapi") { req in
+        return req.redirect(to: "/openapi.html", type: .permanent)
+    }
 
 }
-//extension UserToken: ModelTokenAuthenticatable {
-//    static let valueKey = \UserToken.$value
-//    static let userKey = \UserToken.$user
-//
-//    var isValid: Bool {
-//        true
-//    }
-
-
-//struct UserAuthenticator: BasicAuthenticator {
-//    typealias User = App.User
-//
-//    func authenticate(
-//        basic: BasicAuthorization,
-//        for request: Request
-//    ) -> EventLoopFuture<Void> {
-//        if basic.username == "test" && basic.password == "secret" {
-//            request.auth.login(User(name: <#T##String#>, email: <#T##String#>, passwordHash: <#T##String#>))
-//        }
-//        return request.eventLoop.makeSucceededFuture(())
-//   }
-//}
-
 
 struct LoginResponse: Content {
     let status: Bool
