@@ -16,5 +16,5 @@ struct UserGuardMiddleware: Middleware {
         } catch {
             return request.eventLoop.makeFailedFuture(Abort(.unauthorized))
         }
-    }
+    } 
 }

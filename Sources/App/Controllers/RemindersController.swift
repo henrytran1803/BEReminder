@@ -32,7 +32,7 @@ struct RemindersController: RouteCollection {
     }
 
     func show(req: Request) async throws -> Reminder {
-        guard let reminder = try await Reminder.find(req.parameters.get("id"), on: req.db) else {
+        guard let reminder = try await Reminder.find(req.parameters.get("user_id"), on: req.db) else {
             throw Abort(.notFound)
         }
         return reminder

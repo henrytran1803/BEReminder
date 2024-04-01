@@ -21,7 +21,8 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(User.CreateUser())
     app.migrations.add(Reminder.CreateReminder())
     app.migrations.add(UserToken.CreateUserToken())
-    // register routes
+    app.migrations.add(ModifyReminder())
+
     app.middleware.use(app.sessions.middleware)
     app.middleware.use(User.sessionAuthenticator(.mysql))
     try routes(app)

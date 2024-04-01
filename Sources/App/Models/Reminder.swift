@@ -17,7 +17,8 @@ final class Reminder: Model, Content {
     
     @Field(key: "body")
     var body: String?
-    
+    @Field(key: "status")
+    var status: Bool?
     @Timestamp(key: "createat", on: .create)
     var createat: Date?
     
@@ -27,10 +28,11 @@ final class Reminder: Model, Content {
     init() {
         
     }
-    init(id: UUID? = nil, title: String, body: String? = nil, createat: Date? = nil, user: User) {
+    init(id: UUID? = nil, title: String, body: String? = nil,status: Bool? = false, createat: Date? = nil, user: User) {
         self.id = id
         self.title = title
         self.body = body
+        self.status = status
         self.createat = createat
         self.user = user
     }
